@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+	<head>        <link href="{{ url_for('static', filename='css/Osdetec.css') }}" rel="stylesheet">
+
+		<title>Scan Nmap</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<!-- Bootstrap -->
+		<link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/App.css') }}" rel="stylesheet">
+
+
+		<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
+
+		<!-- Custom Scripts -->
+		<link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
+		<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	</head>
+    <body>
+        <div class="main-header">
+            <div class="container">
+                <h3>Nmap Scan </h3>
+                <div class="col-xs-6" style="padding-left: 0px;">
+                </div>
+                <div class="col-xs-6 text-right">
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row" style="margin: 40px 0 75px;">
+                <div class="panel panel-primary filterable">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Open Ports</h3>
+           
+              <table  id ="table" class="table"  cellpadding="2" style="padding-left: 5%;">
+                        <thead>
+                            <tr class="filters">
+                                <th><h3 > </h3>Port</th>
+                                <th><h3></h3>Services </th>                            
+                            </tr>
+                         
+                        </thead>          
+                          <script>
+                           
+                            let L=[];
+                                    function getCharIdx(str,char,n){
+                                        let r = 0
+                                        for (let i = 0; i<str.length; i++){
+                                            if (str[i] === char){
+                                            r++
+                                            if (r === n){
+                                                return i
+                                            }
+
+                                            }
+                                        
+                                        }
+                                        };
+                            function ekherhal(L){
+                                var ch="";
+                                var pos1=L.indexOf(",")+3;
+                                
+                                var pos2=L.indexOf("]")-2;
+                              
+                                for(var i=pos1;i<=pos2;i++){
+                                    ch=ch.concat(L.charAt(i));
+                               
+                                }
+                                console.log(ch);
+                                return ch;
+                        
+                                
+
+                                
+                            };
+                            let cars =[[21, 'ftp'], [22, 'ssh'], [80, 'http'], [443, 'https']]
+                            var table='';
+                            var cols=2;
+                            let idk='{{value |safe }}';
+                            console.log(idk);
+                            var nb=-1;
+                            for(var i=0;i<idk.length;i++){
+                                
+                                if(idk[i]=='['){
+                                    nb+=1;
+                                    
+                                }
+                            }
+                        
+                          
+                            for(var i=0;i<nb;i++){
+                            if(i==0){
+                             let idk2=idk.substr(idk.indexOf("[")+1,idk.indexOf("]"));   
+                             L.push(idk2);
+                             
+
+                            }
+                
+                            else{
+                                var idk2="";
+                              
+                                 idk2=idk.substr(getCharIdx(idk,"[",i+2),getCharIdx(idk,"]",i+1));
+                                 if(i==nb-1)
+                                 {
+                                     var idk3=idk2.substr(0,idk2.length-1);
+                                    
+                                     L.push(idk3);
+                            
+                                 }   
+                                 else{
+                                     L.push(idk2);
+                                 }
+                              
+                           
+                            }
+                           }
+                           console.log(L);
+                           function getPosPort(L,i){
+                               var indice=L[i].indexOf("[")+1;
+                               return indice;
+                           }
+                           function getPosService(L){
+                               var indice=L.indexOf(",")+2;
+                               return indice;
+                               
+                           }
+                           nb=0;
+                            cars=L;
+                            console.log(cars);
+                            console.log(typeof cars[0]);
+                            for(var i=0;i< cars.length;i++)
+                        {   table+='<tr>';
+                            for (var w=1 ; w<3; w++ )
+                            {   
+                               
+                                if(w==2){
+                                   if (cars[i].includes("f")){
+                                    console.log(cars[i].includes("f"));
+                                    var ch="";
+                                     ch=ekherhal(cars[i]);
+                                table+='<td> '+ ch  +'<a href="http://127.0.0.1:5000/scanftp"> <button>Go for  FTP scan</button>  </a>' +'</td>';
+                                }
+                                
+                                    else if(cars[i][2]=="4"){
+                                        
+                                        var ch="";
+                                        ch=ekherhal(cars[i]);
+                                        table+='<td> '+ ch  +'<a href="http://127.0.0.1:5000/scanssl"> <button>Go for  HTTPS scan</button>  </a>' +'</td>';
+                                    }
+                              
+                                
+                                 
+                                else if (cars[i][(cars[i].indexOf(",")+4)]=="s"){
+                                    var ch="";
+                                     ch=ekherhal(cars[i]);
+                                table+='<td> '+  ch +'<a href="http://127.0.0.1:5000/scanssh"> <button> Go for  SSH scan</button>  </a>' +'</td>';
+                                }
+                                else{
+                                    var ch="";
+                                     ch=ekherhal(cars[i]);
+                                    table+='<td> '+ ch+'</td>';
+                                 
+                                }
+                            }
+                                
+                                else {
+                                    table+='<td> '+ cars[i].substr(cars[i].indexOf("[")+1,(cars[i].indexOf(",")-1   )) +'</td>';
+
+                                   }
+                                
+                                
+                                
+                            }
+                            table+='</tr>';}
+                            document.write('<table cellpadding="2"  border =1 padding-left 5%>' +table +'</table>');
+                            
+
+                        
+                                                            
+                        </script>
+                     
+                    </table>
+          
+
+               
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html> 
